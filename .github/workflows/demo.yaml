@@ -29,7 +29,7 @@ jobs:
 
       - name: Start the devstack
         run: |
-          docker-compose start
+          docker compose start
 
 
   demo-without-cache:
@@ -60,4 +60,4 @@ jobs:
 
       - name: Start the devstack
         run: |
-          docker-compose start
+          docker compose start
