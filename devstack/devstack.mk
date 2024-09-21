@@ -21,12 +21,6 @@ devstack.start:
 	$(DEVSTACK_COMPOSE) --verbose up --build -d --remove-orphans $(DEVSTACK_TARGET)
 .PHONY: devstack.start
 
-## Start the devstack with instrumented binaries for application components
-devstack.start-instrumented:
-	git clean -f -x "./devstack/components/**/coverage/*"
-	$(DEVSTACK_COMPOSE_INSTRUMENTED) up --build -d --remove-orphans $(DEVSTACK_TARGET)
-.PHONY: devstack.start-instrumented
-
 # Restart all devstack containers
 devstack.restart:
 	$(DEVSTACK_COMPOSE) restart
@@ -83,9 +77,6 @@ devstack.capture-coverage-reports: devstack.restart.components
 
 ### Devstack logs
 
-LOG_TARGET ?= devstack-component_worker
-DEVSTACK_LOG_TARGET ?= $(LOG_TARGET)
-
 devstack.logs: devstack.logs.follow
 .PHONY: devstack.logs
 
@@ -103,8 +94,3 @@ devstack.logs.report:
 devstack.logs.follow:
 	$(DEVSTACK_COMPOSE) logs --follow
 .PHONY: devstack.logs.follow
-
-## Follow devstack filtered logs
-devstack.logs.target:
-	podman logs --follow $(shell podman ps -aqf "name=$(DEVSTACK_LOG_TARGET)")
-.PHONY: devstack.logs.target
