@@ -17,6 +17,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Bake
+        uses: docker/bake-action@v5
+        with:
+          push: false
+          load: true
+          set: |
+            *.cache-to=type=gha,mode=max
+            *.cache-from=type=gha
+
       - name: Pull
         run: |
           make devstack.pull
