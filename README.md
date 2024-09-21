@@ -1,7 +1,7 @@
 # gha-docker-caching-demo
 
 ```sh
-go install github.com/rhysd/actionlint/cmd/actionlint@latest
+make deps.install
 
-actionlint
+make verify
 ```
