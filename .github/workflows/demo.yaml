@@ -24,9 +24,9 @@ jobs:
           targets: all
           push: false
           load: true
-          set: |
-            *.cache-to=type=gha,mode=max
-            *.cache-from=type=gha
+          # set: |
+          #   *.cache-to=type=gha,mode=max
+          #   *.cache-from=type=gha
 
       - name: Pull
         run: |
