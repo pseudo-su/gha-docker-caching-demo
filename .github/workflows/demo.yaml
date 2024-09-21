@@ -20,7 +20,7 @@ jobs:
       - name: Bake
         uses: docker/bake-action@v5
         with:
-          source: devstack
+          workdir: devstack
           push: false
           load: true
           set: |
