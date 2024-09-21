@@ -4,8 +4,8 @@ on:
   push:
 
 jobs:
-  with-all-cache:
-    name: With all cache
+  cache-all:
+    name: pull+build cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,8 +50,8 @@ jobs:
         run: |
           make devstack.stop
 
-  with-pull-cache:
-    name: With pull cache
+  cache-pull:
+    name: pull cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -82,8 +82,8 @@ jobs:
         run: |
           make devstack.stop
 
-  with-build-cache:
-    name: With build cache
+  cache-build:
+    name: build cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -123,8 +123,8 @@ jobs:
         run: |
           make devstack.stop
 
-  no-cache:
-    name: No Cache
+  cache-none:
+    name: no cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
