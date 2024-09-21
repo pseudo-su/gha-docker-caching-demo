@@ -27,20 +27,20 @@ services:
     depends_on:
       dep_pubsub:
         condition: service_healthy
-      dep_pubsub_creator:
-        condition: service_completed_successfully
+      # dep_pubsub_creator:
+      #   condition: service_completed_successfully
       dep_temporal-db:
         condition: service_started
       dep_temporal-elasticsearch:
         condition: service_started
       dep_temporal-server:
         condition: service_started
-      dep_temporal-startupscripts:
-        condition: service_completed_successfully
-      dep_opentelemetry-collector:
-        condition: service_started
-      dep_telemetry-jaeger:
-        condition: service_started
+      # dep_temporal-startupscripts:
+      #   condition: service_completed_successfully
+      # dep_opentelemetry-collector:
+      #   condition: service_started
+      # dep_telemetry-jaeger:
+      #   condition: service_started
 
   tools:
     image: tianon/true:multiarch
@@ -70,26 +70,26 @@ services:
       timeout: 10s
       retries: 20
 
-  dep_pubsub_creator:
-    depends_on:
-      dep_pubsub:
-        condition: service_healthy
-    image: alpine/curl
-    restart: on-failure
-    environment:
-      - HTTP_PROXY=
-      - HTTPS_PROXY=
-      - http_proxy=
-      - https_proxy=
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        curl -X PUT http://dep_pubsub:8086/v1/projects/devstack/topics/devstackcheck.topic
+  # dep_pubsub_creator:
+  #   depends_on:
+  #     dep_pubsub:
+  #       condition: service_healthy
+  #   image: alpine/curl
+  #   restart: on-failure
+  #   environment:
+  #     - HTTP_PROXY=
+  #     - HTTPS_PROXY=
+  #     - http_proxy=
+  #     - https_proxy=
+  #   entrypoint:
+  #     - /bin/sh
+  #     - -c
+  #     - |
+  #       curl -X PUT http://dep_pubsub:8086/v1/projects/devstack/topics/devstackcheck.topic
 
-        curl -X PUT http://dep_pubsub:8086/v1/projects/test/topics/commandcentre-events-local
+  #       curl -X PUT http://dep_pubsub:8086/v1/projects/test/topics/commandcentre-events-local
 
-        curl -X PUT http://dep_pubsub:8086/v1/projects/test/topics/cloudevents-local
+  #       curl -X PUT http://dep_pubsub:8086/v1/projects/test/topics/cloudevents-local
 
   dep_temporal-db:
     image: postgres:12-alpine
@@ -156,48 +156,48 @@ services:
     volumes:
       - ./deps/temporal-server/config.yaml:/etc/temporal/config/dynamicconfig.yaml
 
-  dep_temporal-startupscripts:
-    image: temporalio/admin-tools:1.24.2-tctl-1.18.1-cli-1.0.0
-    environment:
-      - TEMPORAL_CLI_ADDRESS=dep_temporal-server:7233
-      - HTTP_PROXY=
-      - HTTPS_PROXY=
-      - http_proxy=
-      - https_proxy=
-    depends_on:
-      dep_temporal-elasticsearch:
-        condition: service_healthy
-      dep_temporal-db:
-        condition: service_healthy
-    volumes:
-      - ./deps/temporal-startupscripts:/etc
-    entrypoint: /etc/run.sh
+  # dep_temporal-startupscripts:
+  #   image: temporalio/admin-tools:1.24.2-tctl-1.18.1-cli-1.0.0
+  #   environment:
+  #     - TEMPORAL_CLI_ADDRESS=dep_temporal-server:7233
+  #     - HTTP_PROXY=
+  #     - HTTPS_PROXY=
+  #     - http_proxy=
+  #     - https_proxy=
+  #   depends_on:
+  #     dep_temporal-elasticsearch:
+  #       condition: service_healthy
+  #     dep_temporal-db:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./deps/temporal-startupscripts:/etc
+  #   entrypoint: /etc/run.sh
 
-  dep_opentelemetry-collector:
-    image: otel/opentelemetry-collector:0.84.0
-    restart: unless-stopped
-    volumes:
-      - ./deps/opentelemetry-collector/config.yaml:/etc/otelcol/config.yaml
-    ports:
-      - 4317:4317   # OTLP gRPC receiver
-    environment:
-      - HTTP_PROXY=
-      - HTTPS_PROXY=
-      - http_proxy=
-      - https_proxy=
-    depends_on:
-      dep_telemetry-jaeger:
-        condition: service_started
+  # dep_opentelemetry-collector:
+  #   image: otel/opentelemetry-collector:0.84.0
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./deps/opentelemetry-collector/config.yaml:/etc/otelcol/config.yaml
+  #   ports:
+  #     - 4317:4317   # OTLP gRPC receiver
+  #   environment:
+  #     - HTTP_PROXY=
+  #     - HTTPS_PROXY=
+  #     - http_proxy=
+  #     - https_proxy=
+  #   depends_on:
+  #     dep_telemetry-jaeger:
+  #       condition: service_started
 
-  dep_telemetry-jaeger:
-    image: jaegertracing/all-in-one:1
-    restart: unless-stopped
-    ports:
-      - 14250:14250 # collector
-      - 16686:16686 # Web UI
-      - 16685:16685 # gRPC QueryService
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
+  # dep_telemetry-jaeger:
+  #   image: jaegertracing/all-in-one:1
+  #   restart: unless-stopped
+  #   ports:
+  #     - 14250:14250 # collector
+  #     - 16686:16686 # Web UI
+  #     - 16685:16685 # gRPC QueryService
+  #   environment:
+  #     - COLLECTOR_OTLP_ENABLED=true
 
   ### TOOLS
 
