@@ -1,4 +1,4 @@
-name: Demo
+name: Cache demo
 
 on:
   push:
