@@ -50,6 +50,12 @@ jobs:
         run: |
           make devstack.stop
 
+      - if: ${{ failure() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
+
   cache-pull:
     name: pull cache
     runs-on: ubuntu-latest
@@ -81,6 +87,12 @@ jobs:
         if: always()
         run: |
           make devstack.stop
+
+      - if: ${{ failure() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
 
   cache-build:
     name: build cache
@@ -123,6 +135,12 @@ jobs:
         run: |
           make devstack.stop
 
+      - if: ${{ failure() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
+
   cache-none:
     name: no cache
     runs-on: ubuntu-latest
@@ -149,3 +167,9 @@ jobs:
         if: always()
         run: |
           make devstack.stop
+
+      - if: ${{ failure() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
