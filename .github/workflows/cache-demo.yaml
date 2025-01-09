@@ -21,7 +21,7 @@ jobs:
       - name: Bake
         uses: docker/bake-action@v6
         with:
-          workdir: devstack
+          source: "{{defaultContext}}:devstack"
           # targets: all
           push: true
           load: true
@@ -99,7 +99,7 @@ jobs:
       - name: Bake
         uses: docker/bake-action@v6
         with:
-          workdir: devstack
+          source: "{{defaultContext}}:devstack"
           # targets: all
           push: true
           load: true
