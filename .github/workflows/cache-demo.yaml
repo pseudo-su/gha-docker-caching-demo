@@ -10,10 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
-
       - name: Cache pull
         uses: pseudo-su/docker-cache@main
         with:
@@ -23,13 +19,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Bake
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
-          workdir: devstack
-          targets: all
-          push: false
+          source: "{{defaultContext}}:devstack"
+          # targets: all
+          push: true
           load: true
           set: |
+            *.tags=user/app:latest
             *.cache-to=type=gha,mode=max
             *.cache-from=type=gha
 
@@ -49,6 +46,12 @@ jobs:
         if: always()
         run: |
           make devstack.stop
+
+      - if: ${{ failure() || cancelled() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
 
   cache-pull:
     name: pull cache
@@ -56,10 +59,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
-
       - name: Cache pull
         uses: pseudo-su/docker-cache@main
         with:
@@ -82,27 +81,30 @@ jobs:
         run: |
           make devstack.stop
 
+      - if: ${{ failure() || cancelled() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
+
   cache-build:
     name: build cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Bake
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
-          workdir: devstack
-          targets: all
-          push: false
+          source: "{{defaultContext}}:devstack"
+          # targets: all
+          push: true
           load: true
           set: |
+            *.tags=user/app:latest
             *.cache-to=type=gha,mode=max
             *.cache-from=type=gha
 
@@ -123,15 +125,17 @@ jobs:
         run: |
           make devstack.stop
 
+      - if: ${{ failure() || cancelled() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export
+
   cache-none:
     name: no cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
 
       - name: Pull
         run: |
@@ -149,3 +153,9 @@ jobs:
         if: always()
         run: |
           make devstack.stop
+
+      - if: ${{ failure() || cancelled() }}
+        name: ⛈️ Print devstack logs (Failure)
+        shell: bash
+        run: |
+          make devstack.logs.export

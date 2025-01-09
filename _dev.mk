@@ -14,21 +14,42 @@ deps.tidy: deps.tools.tidy deps.app.tidy
 
 ## Install app dependencies
 deps.app.install:
+	# Golang dependencies (go.work, go.mod, go.sum)
+	go mod download
 .PHONY: deps.app.install
 
 ## Update app dependencies
 deps.app.update:
+	go get -u ./...
+	go mod download
 .PHONY: deps.app.update
 
 ## Tidy app dependencies
 deps.app.tidy:
+	go get ./...
+	go mod download
 .PHONY: deps.app.tidy
 
 ## Install tool dependencies
 deps.tools.install: \
 	tools/actionlint \
-	tools/editorconfig-checker
+	tools/api-linter \
+	tools/buf \
+	tools/editorconfig-checker \
+	tools/goimports \
+	tools/golangci-lint \
+	tools/plantuml.jar \
+	tools/protoc-gen-buf-breaking \
+	tools/protoc-gen-buf-lint \
+	tools/protoc-gen-connect-go \
+	tools/protoc-gen-gapi-lint \
+	tools/protoc-gen-go-grpc \
+	tools/protoc-gen-go \
+	tools/protoc \
+	tools/temporal \
+	tools/workflowcheck
 .PHONY: deps.tools.install
+
 
 ## Update tool dependencies
 deps.tools.update: deps.tools.install
@@ -47,12 +68,22 @@ deps.tools.clean:
 ### Verify - Code verifiation and Static analysis
 
 ## Run code verification
-verify: verify.editorconfig verify.github-actions
+verify: verify.go verify.editorconfig verify.github-actions verify.temporal-workflows verify.buf
 .PHONY: verify
 
 ## Run code verifiation and automatically apply fixes where possible
-verify.fix: verify.editorconfig verify.github-actions
+verify.fix: verify.go.fix verify.editorconfig verify.github-actions verify.temporal-workflows verify.buf
 .PHONY: verify.fix
+
+# Run static analysis on Golang code
+verify.go:
+	./tools/golangci-lint run -v $(ALL_TARGETS)
+.PHONY: verify.go
+
+# Run static analysis on Golang code and autofix where possible
+verify.go.fix:
+	./tools/golangci-lint run --fix $(ALL_TARGETS)
+.PHONY: verify.go.fix
 
 # Run static analysis on .editorconfig rules
 verify.editorconfig:
@@ -64,7 +95,45 @@ verify.github-actions:
 	./tools/actionlint -shellcheck=
 .PHONY: verify.github-actionlint
 
+## Verify using temporal workflow static analysis
+verify.temporal-workflows:
+	# TODO: enable
+	# ./tools/workflowcheck -config workflowcheck.config.yaml $(APP_TARGETS)
+.PHONY: verify.temporal-workflows
+
+verify.buf:
+ifeq ($(SKIP_VERIFY_BUF),true)
+	echo "Skipping "verify.buf": SKIP_VERIFY_BUF=true";
+else
+	./tools/buf lint
+endif
+.PHONY: verify.buf
+
 ## Verify empty commit diff after codegen
 verify.empty-git-diff:
 	./scripts/verify-empty-git-diff.sh
 .PHONY: verify.empty-git-diff
+
+### Code generation
+
+## Run all code generation
+codegen: codegen.docs codegen.go codegen.deps codegen.autoformat
+.PHONY: codegen
+
+## Run docs code generation
+codegen.docs:
+	./scripts/generate-docs.sh
+.PHONY: codegen.docs
+
+## Run Golang code generation
+codegen.go:
+	go generate ./...
+.PHONY: codegen.go
+
+codegen.autoformat:
+	gofmt -s -w .
+	./tools/goimports -w .
+.PHONY: codegen.autoformat
+
+codegen.deps: deps.tidy
+.PHONY: codegen.deps
