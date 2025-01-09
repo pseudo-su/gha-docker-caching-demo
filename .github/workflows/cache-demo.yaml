@@ -23,7 +23,7 @@ jobs:
         with:
           workdir: devstack
           # targets: all
-          push: false
+          push: true
           load: true
           set: |
             *.cache-to=type=gha,mode=max
@@ -100,7 +100,7 @@ jobs:
         with:
           workdir: devstack
           # targets: all
-          push: false
+          push: true
           load: true
           set: |
             *.cache-to=type=gha,mode=max
