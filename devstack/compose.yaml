@@ -169,7 +169,7 @@ services:
       dep_temporal-db:
         condition: service_healthy
     volumes:
-      - ./deps/temporal-startupscripts:/etc
+      - ./deps/temporal-startupscripts/run.sh:/etc/run.sh
     entrypoint: /etc/run.sh
 
   ### TOOLS
