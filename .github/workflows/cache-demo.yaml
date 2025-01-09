@@ -24,6 +24,7 @@ jobs:
           workdir: devstack
           # targets: all
           push: true
+          tags: user/app:latest
           load: true
           set: |
             *.cache-to=type=gha,mode=max
@@ -101,6 +102,7 @@ jobs:
           workdir: devstack
           # targets: all
           push: true
+          tags: user/app:latest
           load: true
           set: |
             *.cache-to=type=gha,mode=max
