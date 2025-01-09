@@ -10,9 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
+      # - name: Install docker
+      #   run: |
+      #     ./scripts/ubuntu-install-docker.sh
 
       - name: Cache pull
         uses: pseudo-su/docker-cache@main
@@ -62,9 +62,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
+      # - name: Install docker
+      #   run: |
+      #     ./scripts/ubuntu-install-docker.sh
 
       - name: Cache pull
         uses: pseudo-su/docker-cache@main
@@ -100,9 +100,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
+      # - name: Install docker
+      #   run: |
+      #     ./scripts/ubuntu-install-docker.sh
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -147,9 +147,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install docker
-        run: |
-          ./scripts/ubuntu-install-docker.sh
+      # - name: Install docker
+      #   run: |
+      #     ./scripts/ubuntu-install-docker.sh
 
       - name: Pull
         run: |
